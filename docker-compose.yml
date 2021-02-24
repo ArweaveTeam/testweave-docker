@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  arweave-node:
+    extends: 
+      file: ./erlang_docker/docker-compose.yml
+      service: arweave-node
+  postgres:
+    extends:
+      file: ./gateway/docker-compose.yml
+      service: postgres
+  gateway:
+    extends:
+      file: ./gateway/docker-compose.yml
+      service: server
