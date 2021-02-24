@@ -1,0 +1,20 @@
+ ### ARWEAVE ####
+ # file: Dockerfile
+version: '3.8'
+services:
+  arweave-node:
+    container_name: arweave-node-build
+    image: arweave-node:latest
+    build:
+      context: .
+      dockerfile: Dockerfile-arweave-node
+      # dockerfile: Dockerfile-alpine_erlang
+    ports:
+      - "1984:1984"
+    restart: always
+    environment:
+      # AR_RUNMODE: ${AR_RUNMODE?err} #set to <-r test> in .env for hashrate benchmarking 
+                                #set to prod for normal operation <prod>
+        AR_RUNMODE: test
+    volumes:
+      - "../ardata:/mnt/arweave-data"

@@ -1,0 +1,15 @@
+language: node_js
+
+node_js:
+  - "12"
+
+before_script:
+  - npm install yarn --global
+
+services:
+  - docker
+
+script:
+  - yarn dev:lint
+  - yarn docker:start
+  - yarn docker:stop

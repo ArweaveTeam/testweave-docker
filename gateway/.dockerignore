@@ -1,0 +1,20 @@
+# Ignore Everything
+**
+
+# Include Essential Gateway Files
+!/bin
+!/.env
+!/types.graphql
+!/codegen.yml
+!/knexfile.ts
+!/yarn.lock
+!/package.json
+!/package-lock.json
+!/tsconfig.json
+!/src/**
+!/migrations/**
+
+# Ignore Unnecessary Files
+**/*.log
+**/.DS_Store
+**/Thumbs.db
