@@ -6,14 +6,14 @@ services:
       - database:/var/lib/postgresql/data
       - app:/app
     expose:
-      - 5432
+      - ${DATABASE_PORT}
     ports:
-      - 5432:5432
+      - ${DATABASE_PORT}:${DATABASE_PORT}
     environment:
-      POSTGRES_USER: arweave
-      POSTGRES_PASSWORD: arweave
-      POSTGRES_DB: arweave
-    command: -p 5432
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+    command: -p ${DATABASE_PORT}
   # Gateway Configuration
   server:
     build:
@@ -21,10 +21,12 @@ services:
       dockerfile: ./docker/gateway.dockerfile
     volumes:
       - app:/app
+    links:
+      - postgres
     ports: 
-      - 3000:3000
+      - ${PORT}:${PORT}
     environment:
-      PORT: 3000
+      PORT: ${PORT}
     
 volumes:
   database:
