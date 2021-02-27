@@ -1,18 +1,20 @@
 version: '3.8'
 services:
-  #arweave-node:
-  #  container_name: arweave-node-build
-  #  image: arweave-node:latest
-  #  build:
-  #    context: ./erlang_docker/
-  #    dockerfile: ./Dockerfile-arweave-node
-  #  ports:
-  #    - "1984:1984"
-  #  restart: always
-  #  environment:
-  #      AR_RUNMODE: test
-  #  volumes:
-  #    - "../ardata:/mnt/arweave-data"
+  arweave-node:
+    container_name: arweave-node-build
+    image: arweave-node:latest
+    build:
+      context: ./erlang_docker/
+      dockerfile: ./Dockerfile-arweave-node
+    ports:
+      - "1984:1984"
+    expose:
+      - 1984
+    restart: always
+    environment:
+        AR_RUNMODE: test
+    volumes:
+      - "../ardata:/mnt/arweave-data"
   # Postgres Configuration
   postgres:
     image: postgres:12

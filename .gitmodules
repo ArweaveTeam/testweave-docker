@@ -1,6 +1,0 @@
-[submodule "erlang_docker"]
-	path = erlang_docker
-	url = https://github.com/ArweaveTeam/erlang_docker
-[submodule "gateway"]
-	path = gateway
-	url = https://github.com/ArweaveTeam/gateway
