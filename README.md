@@ -15,7 +15,7 @@ Now you'll have:
 - a full arweave gateway running on [http://localhost:3000](http://localhost:3000) and an GraphQL playground running on [http://localhost:3000/graphql](http://localhost:3000/graphql). Here you can do all the amazing things graphql and arweave supplies together. You can find examples and tutorials here [https://gql-guide.vercel.app/](https://gql-guide.vercel.app/) 
 
 
-So, now, [import the TestWeave SDK]((https://github.com/ArweaveTeam/testweave-sdk)) in your projects and HAPPY TESTDLING ! 🖖🌋🚀 
+So, now, [import the TestWeave SDK](https://github.com/ArweaveTeam/testweave-sdk) in your projects and HAPPY TESTDLING ! 🖖🌋🚀 
 
 <!-- ## Build and publish the Docker
 
