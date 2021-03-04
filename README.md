@@ -1,6 +1,21 @@
 # Arweave TetWeave Docker
 
-This REPO is essentially a clone of the gateway repo, but it inside the docker composer file, it contains the proper configuration to downloading the container for the arweave-node. It is intended to be the entry point to create the image that will then be served to docker-hub.
+This repository contains the docker that setups a full arweave-node, including a gateway, on a local device. After having built and run this docker, you'll be able to use the [TestWeave SDK](https://github.com/ArweaveTeam/testweave-sdk) for testing your arweave application locally. 
+
+# Usage
+
+1. Firstly, be sure to have [docker](https://docs.docker.com/engine/install/) installed and working on your device; 
+2. Clone this repo;
+3. Run `docker-compose build` and wait patiently that the docker composes. You should do this only once;
+4. Run `docker-compose up` (add a `-d` flag if you want to run it in detached mode). 
+
+Now you'll have: 
+
+- a full arweave node running on [http://localhost:1984](http://localhost:1984). Here you can access all the endpoints listed in this page: [https://docs.arweave.org/developers/server/http-api](https://docs.arweave.org/developers/server/http-api)
+- a full arweave gateway running on [http://localhost:3000](http://localhost:3000) and an GraphQL playground running on [http://localhost:3000/graphql](http://localhost:3000/graphql). Here you can do all the amazing things graphql and arweave supplies together. You can find examples and tutorials here [https://gql-guide.vercel.app/](https://gql-guide.vercel.app/) 
+
+
+So, now, [import the TestWeave SDK]((https://github.com/ArweaveTeam/testweave-sdk)) in your projects and HAPPY TESTDLING ! 🖖🌋🚀 
 
 <!-- ## Build and publish the Docker
 
