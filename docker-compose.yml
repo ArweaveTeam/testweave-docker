@@ -1,0 +1,47 @@
+services:
+  # Postgres Configuration
+  postgres:
+    image: postgres:12
+    volumes:
+      - database:/var/lib/postgresql/data
+      - app:/app
+    expose:
+      - 5432
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: arweave
+      POSTGRES_PASSWORD: arweave
+      POSTGRES_DB: arweave
+    command: -p 5432
+  # Arweave Node Configurations
+  arweave-node:
+    image: lucaarweave/arweave-node:0.0.1
+    expose:
+      - 1984
+    ports:
+      - "1984:1984"
+    restart: always
+    environment:
+        AR_RUNMODE: test
+    volumes:
+      - "ardata:/mnt/arweave-data"
+  # Arweave Gateway configuration
+  gateway:
+    build:
+      context: .
+      dockerfile: ./docker/gateway.dockerfile
+    volumes:
+      - app:/app
+    expose: 
+      - 3000
+    links:
+      - postgres
+    ports: 
+      - "3000:3000"
+    environment:
+      PORT: 3000
+volumes:
+  app:
+  database:
+  ardata:
