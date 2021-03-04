@@ -1,4 +1,4 @@
-# Arweave TetWeave Docker
+# Arweave TetsWeave Docker
 
 This repository contains the docker that setups a full arweave-node, including a gateway, on a local device. After having built and run this docker, you'll be able to use the [TestWeave SDK](https://github.com/ArweaveTeam/testweave-sdk) for testing your arweave application locally. 
 
