@@ -2,9 +2,13 @@
 
 This repository contains the docker that setups a full arweave-node, including a gateway, on a local device. After having built and run this docker, you'll be able to use the [TestWeave SDK](https://github.com/ArweaveTeam/testweave-sdk) for testing your arweave application locally. 
 
+# Prerequisite 
+1. [Docker](https://docs.docker.com/engine/install/): version 16 or higher 
+2. [Docker-Compose](https://docs.docker.com/compose/install/): verison ~1.27 or higher 
+
 # Usage
 
-1. Firstly, be sure to have [docker](https://docs.docker.com/engine/install/) installed and working on your device; 
+1. Be sure to have docker and docker-compose on your system. 
 2. Clone this repo;
 3. Run `docker-compose build` and wait patiently that the docker composes. You should do this only once;
 4. Run `docker-compose up` (add a `-d` flag if you want to run it in detached mode). 
