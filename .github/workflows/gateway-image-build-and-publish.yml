@@ -5,8 +5,8 @@ on:
     types: [created]
 
 jobs:
-  build_image:
-    name: Build image
+  build_gateway_image:
+    name: Build gateway image
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -32,11 +32,11 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: ./docker-compose.yml
+          file: ./docker/gateway.dockerfile
           push: true
           tags: |
-            ghcr.io/ArweaveTeam/testweave:latest
-            ghcr.io/ArweaveTeam/testweave:${{ github.event.release.tag_name }}
+            ghcr.io/arweave-team/testweave-gateway:latest
+            ghcr.io/arweave-team/testweave-gateway:${{ github.event.release.tag_name }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
       - name: Image digest
