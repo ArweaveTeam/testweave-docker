@@ -35,8 +35,8 @@ jobs:
           file: ./docker/gateway.dockerfile
           push: true
           tags: |
-            ghcr.io/arweave-team/testweave-gateway:latest
-            ghcr.io/arweave-team/testweave-gateway:${{ github.event.release.tag_name }}
+            ghcr.io/demo-hub/testweave-gateway:latest
+            ghcr.io/demo-hub/testweave-gateway:${{ github.event.release.tag_name }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
       - name: Image digest

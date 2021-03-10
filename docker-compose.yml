@@ -28,7 +28,7 @@ services:
       - "ardata:/mnt/arweave-data"
   # Arweave Gateway configuration
   gateway:
-    image: ghcr.io/arweave-team/testweave-gateway:latest
+    image: ghcr.io/demo-hub/testweave-gateway:latest
     volumes:
       - app:/app
     expose: 
