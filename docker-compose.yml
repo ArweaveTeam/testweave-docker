@@ -28,9 +28,7 @@ services:
       - "ardata:/mnt/arweave-data"
   # Arweave Gateway configuration
   gateway:
-    build:
-      context: .
-      dockerfile: ./docker/gateway.dockerfile
+    image: ghcr.io/demo-hub/testweave-gateway:latest
     volumes:
       - app:/app
     expose: 
