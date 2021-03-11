@@ -34,13 +34,13 @@ services:
     volumes:
       - app:/app
     expose: 
-      - 3000
+      - 80
     links:
       - postgres
     ports: 
-      - "3000:3000"
+      - "80:80"
     environment:
-      PORT: 3000
+      PORT: 80
 volumes:
   app:
   database:
