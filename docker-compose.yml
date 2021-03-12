@@ -30,7 +30,7 @@ services:
   gateway:
     build:
       context: .
-      dockerfile: docker/gateway.dockerfile
+      dockerfile: ./docker/gateway.dockerfile
     volumes:
       - app:/app
     expose: 
