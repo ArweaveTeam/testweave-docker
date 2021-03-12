@@ -99,7 +99,7 @@ export async function parallelize(height: number) {
 
   if (height >= topHeight) {
     // log.info('[database] fully synced, monitoring for new blocks');
-    await sleep(11);
+    await sleep(303);
     const nodeInfo = await getNodeInfo();
     if (nodeInfo.height > topHeight) {
       log.info(`[database] updated height from ${topHeight} to ${nodeInfo.height} syncing new blocks`);
