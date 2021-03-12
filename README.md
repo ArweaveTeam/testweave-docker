@@ -21,6 +21,12 @@ Now you'll have:
 
 So, now, [import the TestWeave SDK](https://github.com/ArweaveTeam/testweave-sdk) in your projects and HAPPY TESTDLING ! 🖖🌋🚀 
 
+# Images used
+
+https://hub.docker.com/r/lucaarweave/arweave-node - run an arweave node on your local machine
+
+https://github.com/users/demo-hub/packages/container/package/testweave-gateway - run a gateway connected to the node
+
 <!-- ## Build and publish the Docker
 
 1. Clone this repo
