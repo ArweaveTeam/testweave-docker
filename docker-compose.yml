@@ -29,8 +29,8 @@ services:
   # Arweave Gateway configuration
   gateway:
     build:
-      context: ./gateway
-      dockerfile: ./docker/gateway.dockerfile
+      context: .
+      dockerfile: docker/gateway.dockerfile
     volumes:
       - app:/app
     expose: 
