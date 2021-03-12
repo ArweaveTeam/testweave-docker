@@ -16,7 +16,7 @@ This repository contains the docker that setups a full arweave-node, including a
 Now you'll have: 
 
 - a full arweave node running on [http://localhost:1984](http://localhost:1984). Here you can access all the endpoints listed in this page: [https://docs.arweave.org/developers/server/http-api](https://docs.arweave.org/developers/server/http-api)
-- a full arweave gateway running on [http://localhost:3000](http://localhost:3000) and an GraphQL playground running on [http://localhost:3000/graphql](http://localhost:3000/graphql). Here you can do all the amazing things graphql and arweave supplies together. You can find examples and tutorials here [https://gql-guide.vercel.app/](https://gql-guide.vercel.app/) 
+- a full arweave gateway running on [http://localhost](http://localhost) and an GraphQL playground running on [http://localhost/graphql](http://localhost/graphql). Here you can do all the amazing things graphql and arweave supplies together. You can find examples and tutorials here [https://gql-guide.vercel.app/](https://gql-guide.vercel.app/) 
 
 
 So, now, [import the TestWeave SDK](https://github.com/ArweaveTeam/testweave-sdk) in your projects and HAPPY TESTDLING ! 🖖🌋🚀 
