@@ -1,4 +1,0 @@
-[submodule "gateway"]
-	path = gateway
-	url = https://github.com/ArweaveTeam/gateway
-	ignore = dirty

@@ -9,11 +9,9 @@ This repository contains the docker that setups a full arweave-node, including a
 # Usage
 
 1. Be sure to have docker and docker-compose on your system. 
-2. Clone this repo and its sub-modules by running `git clone --recurse-submodules https://github.com/ArweaveTeam/testweave-docker` 
-3. Copy the .env file and the docker-compose.yml file inside the gateway directory: `cp .env docker-compose.yml gateway/`
-4. Move to the gateway directory: `cd gateway`
-5. Run `docker-compose build` and wait patiently that the docker composes. You should do this only once;
-6. Run `docker-compose up` (add a `-d` flag if you want to run it in detached mode). 
+2. Clone this repo by running `git clone https://github.com/ArweaveTeam/testweave-docker` 
+3. Run `docker-compose build` and wait patiently that the docker composes. You should do this only once;
+4. Run `docker-compose up` (add a `-d` flag if you want to run it in detached mode). 
 
 Now you'll have: 
 
