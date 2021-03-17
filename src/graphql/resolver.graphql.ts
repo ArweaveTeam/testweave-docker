@@ -1,9 +1,9 @@
 import moment from 'moment';
 import {IResolvers} from 'apollo-server-express';
-import {QueryTransactionsArgs} from './types';
+import {QueryTransactionsArgs, QueryBlockArgs, QueryBlocksArgs} from './types';
 import {ISO8601DateTimeString, winstonToAr, utf8DecodeTag} from '../utility/encoding.utility';
 import {TransactionHeader} from '../types/arweave.types';
-import {QueryParams, generateQuery} from './query.graphql';
+import {QueryParams, generateQuery, generateBlockQuery} from './query.graphql';
 
 type Resolvers = IResolvers;
 
@@ -27,6 +27,14 @@ const fieldMap = {
   block_timestamp: 'blocks.mined_at',
   block_height: 'blocks.height',
   block_previous: 'blocks.previous_block',
+};
+
+const blockFieldMap = {
+  id: 'blocks.id',
+  timestamp: 'blocks.mined_at',
+  height: 'blocks.height',
+  previous: 'blocks.previous_block',
+  extended: 'blocks.extended',
 };
 
 export const resolvers: Resolvers = {
@@ -72,6 +80,64 @@ export const resolvers: Resolvers = {
         },
         edges: async () => {
           return results.slice(0, pageSize).map((result: any, index) => {
+            return {
+              cursor: encodeCursor({timestamp, offset: offset + index + 1}),
+              node: result,
+            };
+          });
+        },
+      };
+    },
+    block: async (parent, queryParams: QueryBlockArgs, {req, connection}) => {
+      if (queryParams.id) {
+        return (await generateBlockQuery({
+          select: blockFieldMap,
+          id: queryParams.id,
+        })).first();
+      } else {
+        return null;
+      }
+    },
+    blocks: async (parent, queryParams: QueryBlocksArgs, {req, connection}) => {
+      const {timestamp, offset} = parseCursor(queryParams.after || newCursor());
+      const pageSize = Math.min(queryParams.first || DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE);
+
+      let ids: Array<string> = [];
+      let minHeight = 0;
+      let maxHeight = MAX_PAGE_SIZE;
+
+      if (queryParams.ids) {
+        ids = queryParams.ids;
+      }
+
+      if (queryParams.height && queryParams.height.min) {
+        minHeight = queryParams.height.min;
+      }
+
+      if (queryParams.height && queryParams.height.max) {
+        maxHeight = queryParams.height.max;
+      }
+
+      const query = generateBlockQuery({
+        ids,
+        select: blockFieldMap,
+        minHeight,
+        maxHeight,
+        sortOrder: queryParams.sort || 'HEIGHT_ASC',
+        limit: pageSize + 1,
+        offset: offset,
+        before: timestamp,
+      });
+
+      const results = (await query);
+      const hasNextPage = results.length > pageSize;
+
+      return {
+        pageInfo: {
+          hasNextPage,
+        },
+        edges: async () => {
+          return results.slice(0, pageSize).map((result: any, index: number) => {
             return {
               cursor: encodeCursor({timestamp, offset: offset + index + 1}),
               node: result,
@@ -128,6 +194,22 @@ export const resolvers: Resolvers = {
           id: parent.parent,
         };
       }
+    },
+  },
+  Block: {
+    /*
+    reward: (parent) => {
+      return {
+        address: parent.extended.reward_addr,
+        pool: parent.extended.reward_pool,
+      };
+    },
+    size: (parent) => {
+      return parent.extended?.block_size;
+    },
+    */
+    timestamp: (parent) => {
+      return moment(parent?.timestamp).unix();
     },
   },
 };

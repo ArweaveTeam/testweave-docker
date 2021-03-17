@@ -24,7 +24,16 @@ type Query {
     """
     tags: [TagFilter!]
     """
-    Only match the first n transactions.
+    Find data items from the given data bundles.
+    See: https://github.com/ArweaveTeam/arweave-standards/blob/master/ans/ANS-102.md
+    """
+    bundledIn: [ID!]
+    """
+    Find transactions within a given block height range.
+    """
+    block: BlockFilter
+    """
+    Result page size (max: 100)
     """
     first: Int = 10
     """
@@ -32,14 +41,33 @@ type Query {
     """
     after: String
     """
-    Find transactions within the given block range
-    """
-    block: BlockFilter
-    """
     Optionally specify the result sort order.
     """
     sort: SortOrder = HEIGHT_DESC
   ): TransactionConnection!
+  block(id: String): Block
+  blocks(
+    """
+    Find blocks from a list of ids.
+    """
+    ids: [ID!]
+    """
+    Find blocks within a given block height range.
+    """
+    height: BlockFilter
+    """
+    Result page size (max: 100)
+    """
+    first: Int = 10
+    """
+    A pagination cursor value, for fetching subsequent pages from a result set.
+    """
+    after: String
+    """
+    Optionally specify the result sort order.
+    """
+    sort: SortOrder = HEIGHT_DESC
+  ): BlockConnection!
 }
 """
 Optionally reverse the result sort order from `HEIGHT_DESC` (default) to `HEIGHT_ASC`.
@@ -54,7 +82,6 @@ enum SortOrder {
   """
   HEIGHT_DESC
 }
-
 """
 Find transactions with the folowing tag name and value
 """
@@ -77,15 +104,13 @@ input TagFilter {
   Returns all transactions where the \`app-name\` tag has a value of either \`app-1\` _or_ \`app-2\` _or_ \`app-3\`.
   """
   values: [String!]!
-
   """
   The operator to apply to to the tag filter. Defaults to EQ (equal).
   """
   op: TagOperator = EQ
 }
-
 """
-Find transactions within the given block range
+Find blocks within a given range
 """
 input BlockFilter {
   """
@@ -97,7 +122,29 @@ input BlockFilter {
   """
   max: Int
 }
+"""
+Paginated result set using the GraphQL cursor spec,
+see: https://relay.dev/graphql/connections.htm.
+"""
+type BlockConnection {
+  pageInfo: PageInfo!
+  edges: [BlockEdge!]!
+}
+"""
+Paginated result set using the GraphQL cursor spec.
+"""
+type BlockEdge {
+  """
+  The cursor value for fetching the next page.
 
+  Pass this to the \`after\` parameter in \`blocks(after: $cursor)\`, the next page will start from the next item after this.
+  """
+  cursor: String!
+  """
+  A block object.
+  """
+  node: Block!
+}
 """
 Paginated result set using the GraphQL cursor spec,
 see: https://relay.dev/graphql/connections.htm.
@@ -106,7 +153,6 @@ type TransactionConnection {
   pageInfo: PageInfo!
   edges: [TransactionEdge!]!
 }
-
 """
 Paginated result set using the GraphQL cursor spec.
 """
@@ -122,21 +168,17 @@ type TransactionEdge {
   """
   node: Transaction!
 }
-
 """
 Paginated page info using the GraphQL cursor spec.
 """
 type PageInfo {
   hasNextPage: Boolean!
 }
-
 type Transaction {
   id: ID!
-
   anchor: String!
   signature: String!
   recipient: String!
-
   owner: Owner!
   fee: Amount!
   quantity: Amount!
@@ -149,9 +191,13 @@ type Transaction {
   """
   Transactions with parent are Bundled Data Items as defined in the ANS-102 data spec. https://github.com/ArweaveTeam/arweave-standards/blob/master/ans/ANS-102.md
   """
-  parent: Parent
+  parent: Parent @deprecated(reason: "Use `bundledIn`")
+  """
+  For bundled data items this references the containing bundle ID.
+  See: https://github.com/ArweaveTeam/arweave-standards/blob/master/ans/ANS-102.md
+  """
+  bundledIn: Bundle
 }
-
 """
 The parent transaction for bundled transactions,
 see: https://github.com/ArweaveTeam/arweave-standards/blob/master/ans/ANS-102.md.
@@ -159,16 +205,53 @@ see: https://github.com/ArweaveTeam/arweave-standards/blob/master/ans/ANS-102.md
 type Parent {
   id: ID!
 }
-
 """
-The block in which the transaction was included.
+The data bundle containing the current data item.
+See: https://github.com/ArweaveTeam/arweave-standards/blob/master/ans/ANS-102.md.
 """
-type Block {
+type Bundle {
+  """
+  ID of the containing data bundle.
+  """
   id: ID!
-  timestamp: Int!
-  height: Int!
-  previous: ID!
 }
+type Block {
+  """
+  The block ID.
+  """
+  id: ID!
+  """
+  The block timestamp (UTC).
+  """
+  timestamp: Int!
+  """
+  The block height.
+  """
+  height: Int!
+  """
+  The previous block ID.
+  """
+  previous: ID!
+  # """
+  # The block size (sum of all transaction data contained in this block).
+  # """
+  # size: String!
+  # """
+  # The reward address and current reward pool size.
+  # """
+  # reward: BlockReward!
+}
+
+# type BlockReward {
+#   """
+#   Miner address.
+#   """
+#   address: String!
+#   """
+#   Size of the reward pool.
+#   """
+#   pool: String!
+# }
 
 """
 Basic metadata about the transaction data payload.
@@ -177,7 +260,7 @@ type MetaData {
   """
   Size of the associated data in bytes.
   """
-  size: Int!
+  size: String!
   """
   Type is derrived from the \`content-type\` tag on a transaction.
   """

@@ -17,6 +17,8 @@ export type Query = {
   transaction?: Maybe<Transaction>;
   /** Get a paginated set of matching transactions using filters. */
   transactions: TransactionConnection;
+  block?: Maybe<Block>;
+  blocks: BlockConnection;
 };
 
 
@@ -30,9 +32,24 @@ export type QueryTransactionsArgs = {
   owners?: Maybe<Array<Scalars['String']>>;
   recipients?: Maybe<Array<Scalars['String']>>;
   tags?: Maybe<Array<TagFilter>>;
+  bundledIn?: Maybe<Array<Scalars['ID']>>;
+  block?: Maybe<BlockFilter>;
   first?: Maybe<Scalars['Int']>;
   after?: Maybe<Scalars['String']>;
-  block?: Maybe<BlockFilter>;
+  sort?: Maybe<SortOrder>;
+};
+
+
+export type QueryBlockArgs = {
+  id?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryBlocksArgs = {
+  ids?: Maybe<Array<Scalars['ID']>>;
+  height?: Maybe<BlockFilter>;
+  first?: Maybe<Scalars['Int']>;
+  after?: Maybe<Scalars['String']>;
   sort?: Maybe<SortOrder>;
 };
 
@@ -66,12 +83,35 @@ export type TagFilter = {
   op?: Maybe<TagOperator>;
 };
 
-/** Find transactions within the given block range */
+/** Find blocks within a given range */
 export type BlockFilter = {
   /** Minimum block height to filter from */
   min?: Maybe<Scalars['Int']>;
   /** Maximum block height to filter to */
   max?: Maybe<Scalars['Int']>;
+};
+
+/**
+ * Paginated result set using the GraphQL cursor spec,
+ * see: https://relay.dev/graphql/connections.htm.
+ */
+export type BlockConnection = {
+  __typename?: 'BlockConnection';
+  pageInfo: PageInfo;
+  edges: Array<BlockEdge>;
+};
+
+/** Paginated result set using the GraphQL cursor spec. */
+export type BlockEdge = {
+  __typename?: 'BlockEdge';
+  /**
+   * The cursor value for fetching the next page.
+   * 
+   * Pass this to the \`after\` parameter in \`blocks(after: $cursor)\`, the next page will start from the next item after this.
+   */
+  cursor: Scalars['String'];
+  /** A block object. */
+  node: Block;
 };
 
 /**
@@ -116,8 +156,16 @@ export type Transaction = {
   tags: Array<Tag>;
   /** Transactions with a null block are recent and unconfirmed, if they aren't mined into a block within 60 minutes they will be removed from results. */
   block?: Maybe<Block>;
-  /** Transactions with parent are Bundled Data Items as defined in the ANS-102 data spec. https://github.com/ArweaveTeam/arweave-standards/blob/master/ans/ANS-102.md */
+  /**
+   * Transactions with parent are Bundled Data Items as defined in the ANS-102 data spec. https://github.com/ArweaveTeam/arweave-standards/blob/master/ans/ANS-102.md
+   * @deprecated Use `bundledIn`
+   */
   parent?: Maybe<Parent>;
+  /**
+   * For bundled data items this references the containing bundle ID.
+   * See: https://github.com/ArweaveTeam/arweave-standards/blob/master/ans/ANS-102.md
+   */
+  bundledIn?: Maybe<Bundle>;
 };
 
 /**
@@ -129,12 +177,25 @@ export type Parent = {
   id: Scalars['ID'];
 };
 
-/** The block in which the transaction was included. */
+/**
+ * The data bundle containing the current data item.
+ * See: https://github.com/ArweaveTeam/arweave-standards/blob/master/ans/ANS-102.md.
+ */
+export type Bundle = {
+  __typename?: 'Bundle';
+  /** ID of the containing data bundle. */
+  id: Scalars['ID'];
+};
+
 export type Block = {
   __typename?: 'Block';
+  /** The block ID. */
   id: Scalars['ID'];
+  /** The block timestamp (UTC). */
   timestamp: Scalars['Int'];
+  /** The block height. */
   height: Scalars['Int'];
+  /** The previous block ID. */
   previous: Scalars['ID'];
 };
 
@@ -142,7 +203,7 @@ export type Block = {
 export type MetaData = {
   __typename?: 'MetaData';
   /** Size of the associated data in bytes. */
-  size: Scalars['Int'];
+  size: Scalars['String'];
   /** Type is derrived from the \`content-type\` tag on a transaction. */
   type?: Maybe<Scalars['String']>;
 };
@@ -266,12 +327,15 @@ export type ResolversTypes = {
   SortOrder: SortOrder;
   TagFilter: TagFilter;
   BlockFilter: BlockFilter;
+  BlockConnection: ResolverTypeWrapper<BlockConnection>;
+  BlockEdge: ResolverTypeWrapper<BlockEdge>;
   TransactionConnection: ResolverTypeWrapper<TransactionConnection>;
   TransactionEdge: ResolverTypeWrapper<TransactionEdge>;
   PageInfo: ResolverTypeWrapper<PageInfo>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   Transaction: ResolverTypeWrapper<Transaction>;
   Parent: ResolverTypeWrapper<Parent>;
+  Bundle: ResolverTypeWrapper<Bundle>;
   Block: ResolverTypeWrapper<Block>;
   MetaData: ResolverTypeWrapper<MetaData>;
   Amount: ResolverTypeWrapper<Amount>;
@@ -288,12 +352,15 @@ export type ResolversParentTypes = {
   Int: Scalars['Int'];
   TagFilter: TagFilter;
   BlockFilter: BlockFilter;
+  BlockConnection: BlockConnection;
+  BlockEdge: BlockEdge;
   TransactionConnection: TransactionConnection;
   TransactionEdge: TransactionEdge;
   PageInfo: PageInfo;
   Boolean: Scalars['Boolean'];
   Transaction: Transaction;
   Parent: Parent;
+  Bundle: Bundle;
   Block: Block;
   MetaData: MetaData;
   Amount: Amount;
@@ -304,6 +371,20 @@ export type ResolversParentTypes = {
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   transaction?: Resolver<Maybe<ResolversTypes['Transaction']>, ParentType, ContextType, RequireFields<QueryTransactionArgs, 'id'>>;
   transactions?: Resolver<ResolversTypes['TransactionConnection'], ParentType, ContextType, RequireFields<QueryTransactionsArgs, 'first' | 'sort'>>;
+  block?: Resolver<Maybe<ResolversTypes['Block']>, ParentType, ContextType, RequireFields<QueryBlockArgs, never>>;
+  blocks?: Resolver<ResolversTypes['BlockConnection'], ParentType, ContextType, RequireFields<QueryBlocksArgs, 'first' | 'sort'>>;
+};
+
+export type BlockConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['BlockConnection'] = ResolversParentTypes['BlockConnection']> = {
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  edges?: Resolver<Array<ResolversTypes['BlockEdge']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+};
+
+export type BlockEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['BlockEdge'] = ResolversParentTypes['BlockEdge']> = {
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  node?: Resolver<ResolversTypes['Block'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
 export type TransactionConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['TransactionConnection'] = ResolversParentTypes['TransactionConnection']> = {
@@ -335,10 +416,16 @@ export type TransactionResolvers<ContextType = any, ParentType extends Resolvers
   tags?: Resolver<Array<ResolversTypes['Tag']>, ParentType, ContextType>;
   block?: Resolver<Maybe<ResolversTypes['Block']>, ParentType, ContextType>;
   parent?: Resolver<Maybe<ResolversTypes['Parent']>, ParentType, ContextType>;
+  bundledIn?: Resolver<Maybe<ResolversTypes['Bundle']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
 
 export type ParentResolvers<ContextType = any, ParentType extends ResolversParentTypes['Parent'] = ResolversParentTypes['Parent']> = {
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>;
+};
+
+export type BundleResolvers<ContextType = any, ParentType extends ResolversParentTypes['Bundle'] = ResolversParentTypes['Bundle']> = {
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
@@ -352,7 +439,7 @@ export type BlockResolvers<ContextType = any, ParentType extends ResolversParent
 };
 
 export type MetaDataResolvers<ContextType = any, ParentType extends ResolversParentTypes['MetaData'] = ResolversParentTypes['MetaData']> = {
-  size?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  size?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   type?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType>;
 };
@@ -377,11 +464,14 @@ export type TagResolvers<ContextType = any, ParentType extends ResolversParentTy
 
 export type Resolvers<ContextType = any> = {
   Query?: QueryResolvers<ContextType>;
+  BlockConnection?: BlockConnectionResolvers<ContextType>;
+  BlockEdge?: BlockEdgeResolvers<ContextType>;
   TransactionConnection?: TransactionConnectionResolvers<ContextType>;
   TransactionEdge?: TransactionEdgeResolvers<ContextType>;
   PageInfo?: PageInfoResolvers<ContextType>;
   Transaction?: TransactionResolvers<ContextType>;
   Parent?: ParentResolvers<ContextType>;
+  Bundle?: BundleResolvers<ContextType>;
   Block?: BlockResolvers<ContextType>;
   MetaData?: MetaDataResolvers<ContextType>;
   Amount?: AmountResolvers<ContextType>;

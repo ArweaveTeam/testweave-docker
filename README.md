@@ -1,51 +1,95 @@
-# Arweave TetsWeave Docker
+# Arweave Gateway
 
-This repository contains the docker that setups a full arweave-node, including a gateway, on a local device. After having built and run this docker, you'll be able to use the [TestWeave SDK](https://github.com/ArweaveTeam/testweave-sdk) for testing your arweave application locally. 
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+[![Build Status](https://travis-ci.org/ArweaveTeam/gateway.svg?branch=master)](https://travis-ci.org/ArweaveTeam/gateway)
+[![codecov](https://codecov.io/gh/ArweaveTeam/gateway/branch/master/graph/badge.svg)](https://codecov.io/gh/ArweaveTeam/gateway)
 
-# Prerequisite 
-1. [Docker](https://docs.docker.com/engine/install/): version 16 or higher 
-2. [Docker-Compose](https://docs.docker.com/compose/install/): verison ~1.27 or higher 
+Review the [documentation](./docs/README.md) to learn more about setting up and deploying a Gateway.
 
-# Usage
+## Requirements
 
-1. Be sure to have docker and docker-compose on your system. 
-2. Clone this repo by running `git clone https://github.com/ArweaveTeam/testweave-docker` 
-3. Run `docker-compose build` and wait patiently that the docker composes. You should do this only once;
-4. Run `docker-compose up` (add a `-d` flag if you want to run it in detached mode). 
+1. A Unix OS
 
-Now you'll have: 
+2. Docker and Docker Compose LTS
 
-- a full arweave node running on [http://localhost:1984](http://localhost:1984). Here you can access all the endpoints listed in this page: [https://docs.arweave.org/developers/server/http-api](https://docs.arweave.org/developers/server/http-api)
-- a full arweave gateway running on [http://localhost](http://localhost) and an GraphQL playground running on [http://localhost/graphql](http://localhost/graphql). Here you can do all the amazing things graphql and arweave supplies together. You can find examples and tutorials here [https://gql-guide.vercel.app/](https://gql-guide.vercel.app/) 
+### Suggested Hardware
 
+There are several million transactions on the Arweave chain. In order to effectively serve content on the gateway you'll need a decent sized computer. The ideal specs for a Gateway should have the following:
 
-So, now, [import the TestWeave SDK](https://github.com/ArweaveTeam/testweave-sdk) in your projects and HAPPY TESTDLING ! 🖖🌋🚀 
+1. 16GB RAM (ideally 32GB RAM)
 
-# Images used
+2. ~1TB of SSD storage available
 
-https://hub.docker.com/r/lucaarweave/arweave-node - run an arweave node on your local machine
+3. Intel i5 / AMD FX or greater, +4 vCPUs should be more than enough, these are typically Intel Xeon CPUs.
 
-https://github.com/users/demo-hub/packages/container/package/testweave-gateway - run a gateway connected to the node
+## Environment
 
-<!-- ## Build and publish the Docker
+By default, there is a default environment you can use located at `.env.docker` in the repository.
 
-1. Clone this repo
-2. Merge everything but the .env file from here: [https://github.com/ArweaveTeam/gateway](https://github.com/ArweaveTeam/gateway)
-3. Run a `docker-compose build`
-4. Run a `docker-compose up`
-5. Verify that everything works on your local environment. So, after having done 3. and 4. you should verify the followings: 
-   1. Clone the TestWeave SDK repository [https://github.com/ArweaveTeam/testweave-sdk](https://github.com/ArweaveTeam/testweave-sdk);
-   2. Go inside the TestWeave SDK dir, and run a `npm install` and then a `npm run test`;
-   3. Now you should have some TXs inside your arweave-node;
-   4. Go to https://localhost:3000/TXID that should display something like: "Arweave is the best web3-related thing out there!!!"
-   5. Check out that the arweave-node works too. Navigate to http://localhost:1984/tx/TXID that should display the JSON info about the transaction
-   6. If 4. and 5. above work, then the docker built and run properly
-6. Stop the docker container by running `docker-compose down` or by presing ctrl+c
-7. Run `docker images` and sign down the ID of the image having the name: "testweave-docker_gateway"
-8. If you are not logged in docker, do it by running `docker login −−username=<USERNAME> −−email=<EMAIL ID>`
-9. Assign to that image a tag that is relevant to your docker user and that increments the latest version you have published of the image. For instance, since my username is "lucaarweave", since the last version I have published was the "0.0.1", and since my image ID is "e61546b17694" I have to run: `docker tag e61546b17694 lucaarweave/testweave-docker:0.0.2`
-10. Publish the docker on docker-hub by running `docker push <user−name>/image−name`. For instance, for the example in 9. yous should run `docker push lucaarweave/testweave-docker:0.0.2`
-11. To verify that everything worked properly: 
-    1.  firstly clean your docker local system by running: `docker system prune` and `docker volume prune`
-    2.  pull the image that you have published in 10. by running `docker pull <user−name>/image−name`. For instance, for the example in 9. you should run `docker pull lucaarweave/testweave-docker:0.0.2`
-    3.  After the image is downloaded run `docker run <user−name>/image−name`, for instance -->
+```env
+ARWEAVE_NODES=["https://arweave.net"]
+
+DATABASE_HOST=postgres
+DATABASE_PORT=5432
+DATABASE_USER=arweave
+DATABASE_PASSWORD=arweave
+DATABASE_NAME=arweave
+
+ENVIRONMENT=public
+MANIFESTS=0
+BIP39=0
+PORT=3000
+
+PARALLEL=4
+SNAPSHOT=0
+
+INDICES=["App-Name", "app", "domain", "namespace"]
+```
+
+Make sure you copy this configuration to `.env`.
+
+```bash
+cp .env.docker .env
+```
+
+## Compilation
+
+You can start the server with `docker-compose`.
+
+```bash
+# with npm
+npm run docker:start
+
+# with yarn
+yarn docker:start
+
+# with pure docker-compose
+docker-compose up --build -d
+```
+
+You can spin down the `docker-compose` cluster with.
+
+```bash
+# with npm
+npm run docker:stop
+
+# with yarn
+yarn docker:stop
+
+# with pure docker-compose
+docker-compose down
+```
+
+## Testing
+
+You can test if the server and the GraphQL queries are working properly by navigating to.
+
+```bash
+http://localhost:3000/graphql
+```
+
+This webpage should look similar to.
+
+```bash
+https://arweave.dev/graphql
+```
