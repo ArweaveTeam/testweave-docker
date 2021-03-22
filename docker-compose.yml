@@ -17,30 +17,26 @@ services:
   # Arweave Node Configurations
   arweave-node:
     image: lucaarweave/arweave-node:0.0.1
-    expose:
+    expose: 
       - 1984
     ports:
       - "1984:1984"
-    restart: always
     environment:
-        AR_RUNMODE: test
+      AR_RUNMODE: test
     volumes:
       - "ardata:/mnt/arweave-data"
   # Arweave Gateway configuration
-  gateway:
-    build:
-      context: .
-      dockerfile: ./docker/gateway.dockerfile
+  arweave-gateway:
+    image: lucaarweave/arweave-gateway:0.0.1
     volumes:
       - app:/app
-    expose: 
-      - 80
-    links:
+    links: 
       - postgres
-    ports: 
-      - "80:80"
-    environment:
-      PORT: 80
+      - arweave-node
+    expose: 
+      - 3000
+    ports:
+      - "3000:3000"
 volumes:
   app:
   database:
