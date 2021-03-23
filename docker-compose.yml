@@ -14,6 +14,8 @@ services:
       POSTGRES_PASSWORD: arweave
       POSTGRES_DB: arweave
     command: -p 5432
+    networks:
+      - sub-etha
   # Arweave Node Configurations
   arweave-node:
     image: lucaarweave/arweave-node:0.0.1
@@ -25,6 +27,9 @@ services:
       AR_RUNMODE: test
     volumes:
       - "ardata:/mnt/arweave-data"
+    restart: "always"
+    networks:
+      - sub-etha
   # Arweave Gateway configuration
   arweave-gateway:
     image: lucaarweave/arweave-gateway:0.0.1
@@ -37,7 +42,28 @@ services:
       - 3000
     ports:
       - "3000:3000"
+    networks:
+      - sub-etha
+  # The TestWeave net
+  testwaeve:
+    image: "reverseproxy:1.0.0"
+    container_name: testweave
+    build:
+      context: .
+      dockerfile: ./docker/DockerFile
+    links: 
+      - postgres
+      - arweave-node
+      - arweave-gateway
+    ports:
+      - "80:80"
+    expose:
+      - 80
+    networks:
+      - sub-etha
 volumes:
   app:
   database:
   ardata:
+networks: 
+  sub-etha:
