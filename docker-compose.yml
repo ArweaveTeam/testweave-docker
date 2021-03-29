@@ -48,9 +48,6 @@ services:
   testweave:
     image: "ghcr.io/demo-hub/testweave-net:latest"
     container_name: testweave
-    build:
-      context: .
-      dockerfile: ./docker/DockerFile
     links: 
       - postgres
       - arweave-node
