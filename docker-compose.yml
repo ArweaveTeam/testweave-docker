@@ -45,12 +45,9 @@ services:
     networks:
       - sub-etha
   # The TestWeave net
-  testwaeve:
-    image: "reverseproxy:1.0.0"
+  testweave:
+    image: "ghcr.io/demo-hub/testweave-net:latest"
     container_name: testweave
-    build:
-      context: .
-      dockerfile: ./docker/DockerFile
     links: 
       - postgres
       - arweave-node

@@ -32,11 +32,11 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: ./docker/gateway.dockerfile
+          file: ./docker/Dockerfile
           push: true
           tags: |
-            ghcr.io/demo-hub/testweave-gateway:latest
-            ghcr.io/demo-hub/testweave-gateway:${{ github.event.release.tag_name }}
+            ghcr.io/demo-hub/testweave-net:latest
+            ghcr.io/demo-hub/testweave-net:${{ github.event.release.tag_name }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
       - name: Image digest
