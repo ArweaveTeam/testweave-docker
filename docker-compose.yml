@@ -18,7 +18,7 @@ services:
       - sub-etha
   # Arweave Node Configurations
   arweave-node:
-    image: lucaarweave/arweave-node:0.0.2
+    image: lucaarweave/arweave-node:0.0.3
     expose: 
       - 1984
     ports:
