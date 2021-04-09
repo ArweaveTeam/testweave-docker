@@ -27,7 +27,7 @@ services:
       AR_RUNMODE: test
     volumes:
       - "ardata:/mnt/arweave-data"
-    restart: "always"
+    # restart: "always"
     networks:
       - sub-etha
   # Arweave Gateway configuration
