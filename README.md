@@ -10,7 +10,7 @@ This repository contains the docker that setups a full arweave-node, including a
 
 1. Be sure to have docker and docker-compose on your system. 
 2. Clone this repo;
-3. Run `docker-compose up` (add a `-d` flag if you want to run it in detached mode). 
+3. Run `docker compose up` (add a `-d` flag if you want to run it in detached mode). 
 
 Now you'll have: 
 
