@@ -58,6 +58,20 @@ services:
       - 80
     networks:
       - sub-etha
+  auto-miner:
+    image: lucaarweave/arweave-node:0.0.4
+    links:
+      - arweave-node
+    networks:
+      - sub-etha
+    entrypoint: ["/bin/bash","-c"]
+    command:
+    - |
+      while true
+      do
+      curl -s -X POST -H 'X-Network: arweave.testnet' arweave-node:1984/mine
+      sleep 20
+      done
 volumes:
   app:
   database:
