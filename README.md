@@ -5,6 +5,7 @@ This repository contains the docker that setups a full arweave-node, including a
 # Prerequisite 
 1. [Docker](https://docs.docker.com/engine/install/): version 16 or higher 
 2. [Docker-Compose](https://docs.docker.com/compose/install/): verison ~1.27 or higher 
+3. `pip install cryptography==2.2.2` fixes : "CryptographyDeprecationWarning: Python 2 is no longer supported by the Python core team. Support for it is now deprecated in cryptography, and will be removed in the next release."
 
 # Usage
 
